@@ -29,27 +29,39 @@ type AccessPoliciesValue struct {
 	ObjectId string `json:"objectId"`
 }
 
-func main() {
-	accountName := os.Args[1]
-	accessPolicies := make([]AccessPoliciesValue, len(os.Args[2:]))
+func (data *DeployParemeters) FillDeployParameters(accountName *string, accessPolicies *[]string) DeployParemeters {
+	accessPoliciesValues := make([]AccessPoliciesValue, len(*accessPolicies))
 
-	for i := 0 ; i < len(os.Args[2:]); i++ {
-		accessPolicies[i] = AccessPoliciesValue{ObjectId:os.Args[i+2]}
+	for i := 0 ; i < len(*accessPolicies); i++ {
+		accessPoliciesValues[i] = AccessPoliciesValue{ObjectId: (*accessPolicies)[i]}
 	}
 
-	data := DeployParemeters {
-		Schema:			"https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	return DeployParemeters{
+		Schema: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
 		ContentVersion: "1.0.0.0",
 		Parameters: Parameters{
 			AccountName{
-				Value: accountName,
+				Value: *accountName,
 			},
 			AccessPolicies{
-				Value:accessPolicies,
+				Value: accessPoliciesValues,
 			},
 		},
 	}
+}
 
+func (data *DeployParemeters) ExportDeployParametersToFile(fileName string) {
 	file, _ := json.MarshalIndent(data, "", " ")
-	_ = ioutil.WriteFile("azuredeploy.parameters.json", file, 0644)
+	_ = ioutil.WriteFile(fileName, file, 0644)
+}
+
+func main() {
+	accountName := os.Args[1]
+	accessPolicies := os.Args[2:]
+
+	var data DeployParemeters
+
+	data = data.FillDeployParameters(&accountName, &accessPolicies)
+
+	data.ExportDeployParametersToFile("azuredeploy.parameters.json")
 }
