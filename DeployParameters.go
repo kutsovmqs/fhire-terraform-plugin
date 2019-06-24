@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 )
+
+const schema = "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#"
+const contentVersion = "1.0.0.0"
 
 type DeployParemeters struct {
 	Schema string `json:"$schema"`
@@ -29,7 +30,7 @@ type AccessPoliciesValue struct {
 	ObjectId string `json:"objectId"`
 }
 
-func (data *DeployParemeters) FillDeployParameters(accountName *string, accessPolicies *[]string) DeployParemeters {
+func (data *DeployParemeters) Fill(accountName *string, accessPolicies *[]string) DeployParemeters {
 	accessPoliciesValues := make([]AccessPoliciesValue, len(*accessPolicies))
 
 	for i := 0 ; i < len(*accessPolicies); i++ {
@@ -37,8 +38,8 @@ func (data *DeployParemeters) FillDeployParameters(accountName *string, accessPo
 	}
 
 	return DeployParemeters{
-		Schema: "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-		ContentVersion: "1.0.0.0",
+		Schema: schema,
+		ContentVersion: contentVersion,
 		Parameters: Parameters{
 			AccountName{
 				Value: *accountName,
@@ -50,13 +51,6 @@ func (data *DeployParemeters) FillDeployParameters(accountName *string, accessPo
 	}
 }
 
-func (data *DeployParemeters) Write(writer io.Writer) (int, error) {
-	thread, _ := json.MarshalIndent(data, "", " ")
-	if len(thread) == 0 {
-		fmt.Println("Empty input parameters.")
-		return 0, nil
-	}
-
-	writer.Write(thread)
-	return len(thread), nil
+func (deployParemeters *DeployParemeters) Marshal() ([]uint8, error) {
+	return json.MarshalIndent(deployParemeters, "", " ")
 }

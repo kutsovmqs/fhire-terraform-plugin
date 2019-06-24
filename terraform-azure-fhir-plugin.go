@@ -1,20 +1,23 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 )
 
+const outputFileName = "azuredeploy.parameters.json"
+const accountNameInputIndex = 1
+const accessPoliciesInputIndex = 2
+
 func main() {
-	accountName    := os.Args[1]
-	accessPolicies := os.Args[2:]
+	accountName    := os.Args[accountNameInputIndex]
+	accessPolicies := os.Args[accessPoliciesInputIndex:]
+	fileName 	   := outputFileName
 
-	fileName := "azuredeploy.parameters.json"
+	var deployParemeters DeployParemeters
+	deployParemeters = deployParemeters.Fill(&accountName, &accessPolicies)
 
-	var data DeployParemeters
-	data = data.FillDeployParameters(&accountName, &accessPolicies)
+	data, _ := deployParemeters.Marshal()
 
-	file, _ := os.OpenFile(fileName, os.O_WRONLY|os.O_TRUNC, 0644)
-
-	data.Write(file)
-	defer file.Close()
+	_ = ioutil.WriteFile(fileName, data, 0644)
 }
