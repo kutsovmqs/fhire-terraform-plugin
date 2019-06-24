@@ -3,18 +3,21 @@
  "contentVersion": "1.0.0.0",
  "parameters": {
   "accountName": {
-   "value": "accountName2"
+   "value": "accountName1"
   },
   "accessPolicies": {
    "value": [
     {
-     "objectId": "Vasya2"
+     "objectId": "User11"
     },
     {
-     "objectId": "Petya2"
+     "objectId": "User22"
     },
     {
-     "objectId": "Ekkliziast2"
+     "objectId": "User33"
+    },
+    {
+     "objectId": "User777"
     }
    ]
   }

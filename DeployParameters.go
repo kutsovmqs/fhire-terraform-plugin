@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"os"
+	"fmt"
+	"io"
 )
 
 type DeployParemeters struct {
@@ -50,18 +50,12 @@ func (data *DeployParemeters) FillDeployParameters(accountName *string, accessPo
 	}
 }
 
-func (data *DeployParemeters) ExportDeployParametersToFile(fileName string) {
-	file, _ := json.MarshalIndent(data, "", " ")
-	_ = ioutil.WriteFile(fileName, file, 0644)
-}
-
-func main() {
-	accountName := os.Args[1]
-	accessPolicies := os.Args[2:]
-
-	var data DeployParemeters
-
-	data = data.FillDeployParameters(&accountName, &accessPolicies)
-
-	data.ExportDeployParametersToFile("azuredeploy.parameters.json")
+func (data *DeployParemeters) Write(writer io.Writer) (int, error) {
+	thread, _ := json.MarshalIndent(data, "", " ")
+	if len(thread) == 0 {
+		fmt.Println("Empty input parameters.")
+		return 0, nil
+	}
+	writer.Write(thread)
+	return len(thread), nil
 }
