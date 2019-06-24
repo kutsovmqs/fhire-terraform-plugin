@@ -1,1 +1,1 @@
-# fhire-terraform-plugin
+# terraform-azure-fhir-plugin

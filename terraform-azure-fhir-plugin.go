@@ -9,8 +9,8 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "terraform-azure-fhire-plugin"
-	app.Usage = "Create terraform azure fhire plugin"
+	app.Name = "terraform-azure-fhir-plugin"
+	app.Usage = "Create terraform azure fhir plugin"
 	app.Action = func(c *cli.Context) error {
 		accountName := os.Args[1]
 		accessPolicies := os.Args[2:]
