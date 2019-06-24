@@ -56,6 +56,7 @@ func (data *DeployParemeters) Write(writer io.Writer) (int, error) {
 		fmt.Println("Empty input parameters.")
 		return 0, nil
 	}
+
 	writer.Write(thread)
 	return len(thread), nil
 }

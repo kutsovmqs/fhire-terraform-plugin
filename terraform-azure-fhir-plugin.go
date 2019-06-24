@@ -1,34 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
-	"github.com/urfave/cli"
 )
 
 func main() {
-	app := cli.NewApp()
-	app.Name = "terraform-azure-fhir-plugin"
-	app.Usage = "Create terraform azure fhir plugin"
-	app.Action = func(c *cli.Context) error {
-		accountName := os.Args[1]
-		accessPolicies := os.Args[2:]
-		fileName := "azuredeploy.parameters.json"
+	accountName    := os.Args[1]
+	accessPolicies := os.Args[2:]
 
-		var data DeployParemeters
-		data = data.FillDeployParameters(&accountName, &accessPolicies)
+	fileName := "azuredeploy.parameters.json"
 
-		f2, _ := os.OpenFile(fileName, os.O_WRONLY, 0644)
-		data.Write(f2)
-		defer f2.Close()
+	var data DeployParemeters
+	data = data.FillDeployParameters(&accountName, &accessPolicies)
 
-		fmt.Println("done")
-		return nil
-	}
+	file, _ := os.OpenFile(fileName, os.O_WRONLY|os.O_TRUNC, 0644)
 
-	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
-	}
+	data.Write(file)
+	defer file.Close()
 }

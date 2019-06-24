@@ -1,4 +1,4 @@
-module terraform-azure-fhire-plugin
+module terraform-azure-fhir-plugin
 
 go 1.12
 
